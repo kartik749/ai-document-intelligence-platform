@@ -1,0 +1,17 @@
+[
+  {
+    "question": "What are the two problems listed for Day 2?",
+    "expected_page": 2,
+    "expected_keywords": ["Max Consecutive Ones", "Move Zeroes"]
+  },
+  {
+    "question": "What topic does Day 2 focus on?",
+    "expected_page": 2,
+    "expected_keywords": ["Array Traversal"]
+  },
+  {
+    "question": "What topic does Day 21 focus on?",
+    "expected_page": 1,
+    "expected_keywords": ["Revision"]
+  }
+]

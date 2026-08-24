@@ -1,0 +1,25 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment secrets - NEVER commit these
+.env
+backend/.env
+
+# Node / Next.js
+node_modules/
+frontend/.next/
+frontend/node_modules/
+
+# Uploaded files
+backend/storage/
+
+# Evaluation output (results specific to a local run, not source)
+backend/evaluation/eval_results.json
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.vscode/
