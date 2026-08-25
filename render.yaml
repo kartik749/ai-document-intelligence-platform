@@ -1,0 +1,53 @@
+databases:
+  - name: doc-postgres
+    plan: free
+    databaseName: docintel
+    user: docintel_user
+
+services:
+  - type: redis
+    name: doc-redis
+    plan: free
+    ipAllowList: []
+
+  - type: web
+    name: doc-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: doc-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: doc-redis
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: worker
+    name: doc-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: python worker.py
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: doc-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: doc-redis
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false
