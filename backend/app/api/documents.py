@@ -13,7 +13,7 @@ from app.core.security import decode_token
 from app.config import settings
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.services.jobs import process_document_job
-from app.queue import task_queue
+
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 security = HTTPBearer()
@@ -68,7 +68,8 @@ def upload_document(
     db.commit()
     db.refresh(document)
 
-    task_queue.enqueue(process_document_job, str(document.id), storage_path)
+    process_document_job(str(document_id),storage_path)
+    db.refresh(document)
     return document
 
 @router.get("", response_model=list[DocumentResponse])
