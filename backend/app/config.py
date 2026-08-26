@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     groq_api_key : str = ""
     redis_url : str = "redis://localhost:6379/0"
     test_database_url : str = ""
+    hf_api_token: str = ""
 
     @field_validator("database_url")
     @classmethod

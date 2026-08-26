@@ -1,22 +1,22 @@
-import os
-from groq import Groq
+import requests
+from app.config import settings
 
-_client = None
+HF_API_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction"
 
-def get_client():
-    global _client
-    if _client is None:
-        _client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-    return _client
 
 def generate_embeddings(texts: list[str]) -> list[list[float]]:
     """
-    Generates embeddings using Groq's hosted nomic-embed-text-v1_5 model.
-    Returns a list of embedding vectors (768-dim) in the same order as input.
+    Generates embeddings using Hugging Face's free Inference API.
+    Runs the same all-MiniLM-L6-v2 model remotely instead of loading it
+    locally, keeping the deployed container lightweight (no torch needed).
+    Returns a list of embedding vectors (384-dim) in the same order as input.
     """
-    client = get_client()
-    response = client.embeddings.create(
-        input=texts,
-        model="nomic-embed-text-v1_5",
+    headers = {"Authorization": f"Bearer {settings.hf_api_token}"}
+    response = requests.post(
+        HF_API_URL,
+        headers=headers,
+        json={"inputs": texts, "options": {"wait_for_model": True}},
+        timeout=30,
     )
-    return [item.embedding for item in response.data]
+    response.raise_for_status()
+    return response.json()
