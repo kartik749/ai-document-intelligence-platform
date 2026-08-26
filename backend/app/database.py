@@ -4,7 +4,7 @@ from app.config import settings
 
 engine = create_engine(
     settings.database_url,
-    connect_args = ["connect_timeout" : 10]
+    connect_args = {"connect_timeout" : 10}
     )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
