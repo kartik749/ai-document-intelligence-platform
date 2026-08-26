@@ -34,7 +34,7 @@ def test_upload_creates_document(client, auth_headers):
     assert response.status_code == 201
     data = response.json()
     assert data["filename"] == "test.pdf"
-    assert data["status"] == "uploaded"
+    assert data["status"] == "ready"
 
 
 def test_list_documents_returns_only_own(client, db_session):

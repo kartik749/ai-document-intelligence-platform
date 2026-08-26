@@ -68,7 +68,7 @@ def upload_document(
     db.commit()
     db.refresh(document)
 
-    process_document_job(str(document_id),storage_path)
+    process_document_job(str(document_id),storage_path,db)
     db.refresh(document)
     return document
 

@@ -13,7 +13,7 @@ export function useAuthGuard() {
     if (!token) {
       router.push("/login");
     } else {
-      setChecked(true);
+      setTimeout(() => setChecked(true), 0);
     }
   }, [router]);
 

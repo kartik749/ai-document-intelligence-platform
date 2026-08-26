@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { apiFetch, setTokens } from "@/lib/api";
 
 export default function LoginPage() {
@@ -39,35 +40,43 @@ export default function LoginPage() {
 
   return (
     <div className="auth-container">
-      <form onSubmit={handleSubmit} className="auth-form">
-        <h1>Log in</h1>
+      <form onSubmit={handleSubmit} className="auth-form glass-card animate-fade-in-up">
+        <h1>Welcome back</h1>
 
         {error && <p className="error-text">{error}</p>}
 
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <div>
+          <label className="label-modern">Email Address</label>
+          <input
+            className="input-modern"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="name@company.com"
+            required
+          />
+        </div>
 
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div>
+          <label className="label-modern">Password</label>
+          <input
+            className="input-modern"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+        </div>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }} disabled={loading}>
           {loading ? "Logging in..." : "Log in"}
         </button>
 
-        <p>
-          Don&apos;t have an account? <a href="/register">Register</a>
+        <p className="auth-form-footer">
+          Don&apos;t have an account? <Link href="/register">Register</Link>
         </p>
       </form>
     </div>
   );
-}   
+}

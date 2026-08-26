@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { apiFetch } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -37,33 +38,41 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-container">
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit} className="auth-form glass-card animate-fade-in-up">
         <h1>Create an account</h1>
 
         {error && <p className="error-text">{error}</p>}
 
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <div>
+          <label className="label-modern">Email Address</label>
+          <input
+            className="input-modern"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="name@company.com"
+            required
+          />
+        </div>
 
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div>
+          <label className="label-modern">Password</label>
+          <input
+            className="input-modern"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Create a secure password"
+            required
+          />
+        </div>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }} disabled={loading}>
           {loading ? "Creating account..." : "Register"}
         </button>
 
-        <p>
-          Already have an account? <a href="/login">Log in</a>
+        <p className="auth-form-footer">
+          Already have an account? <Link href="/login">Log in</Link>
         </p>
       </form>
     </div>
