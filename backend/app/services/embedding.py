@@ -1,17 +1,22 @@
-from sentence_transformers import SentenceTransformer
-_model = None
+import os
+from groq import Groq
 
-def get_model():
-    global _model
-    if _model is None:
-        _model = SentenceTransformer('all-MiniLM-L6-v2')
-    return _model
+_client = None
+
+def get_client():
+    global _client
+    if _client is None:
+        _client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    return _client
 
 def generate_embeddings(texts: list[str]) -> list[list[float]]:
     """
-    Generates embeddings locally using a sentence-transformers model.
-    Returns a list of embedding vectors (384-dim) in the same order as input.
+    Generates embeddings using Groq's hosted nomic-embed-text-v1_5 model.
+    Returns a list of embedding vectors (768-dim) in the same order as input.
     """
-    model = get_model()
-    embeddings = model.encode(texts, show_progress_bar=False)
-    return embeddings.tolist()
+    client = get_client()
+    response = client.embeddings.create(
+        input=texts,
+        model="nomic-embed-text-v1_5",
+    )
+    return [item.embedding for item in response.data]

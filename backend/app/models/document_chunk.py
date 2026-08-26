@@ -12,4 +12,4 @@ class DocumentChunk(Base):
     chunk_text = Column(String, nullable=False)
     page_number = Column(Integer, nullable=False)
     chunk_index = Column(Integer, nullable=False)
-    embedding = Column(Vector(384), nullable=False)  #
+    embedding = Column(Vector(768), nullable=False)  #

@@ -18,7 +18,10 @@ class Settings(BaseSettings):
     @classmethod
     def fix_postgres_scheme(cls, v: str) -> str:
         if v.startswith("postgres://"):
-            return v.replace("postgres://", "postgresql://", 1)
+            v = v.replace("postgres://", "postgresql://", 1)
+        if "render.com" in v and "sslmode" not in v:
+            separator = "&" if "?" in v else "?"
+            v = f"{v}{separator}sslmode=require"
         return v
 
     class Config:
