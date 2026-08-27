@@ -77,53 +77,53 @@ export default function ChatPage() {
   if (!authChecked) return null;
 
   return (
-    <div className="chat-layout animate-fade-in">
-      <header className="chat-header">
-        <button className="btn btn-ghost" style={{ padding: '0.5rem' }} onClick={() => router.push("/dashboard")}>
+    <div className="flex flex-col h-screen max-w-4xl mx-auto relative animate-fade-in">
+      <header className="flex items-center p-5 bg-white border-b border-border shadow-sm sticky top-0 z-10">
+        <button className="btn btn-ghost p-2" onClick={() => router.push("/dashboard")}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
-        <h2 className="chat-title">{document?.filename || "Loading document..."}</h2>
+        <h2 className="text-lg font-medium ml-4 overflow-hidden text-ellipsis whitespace-nowrap text-foreground">{document?.filename || "Loading document..."}</h2>
         
         {document?.status && (
-          <span className={`badge badge-${document.status}`} style={{ marginLeft: 'auto' }}>
+          <span className={`badge badge-${document.status} ml-auto`}>
             {document.status === 'ready' ? 'Ready' : document.status}
           </span>
         )}
       </header>
 
-      <div className="chat-messages">
+      <div className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-6 scroll-smooth">
         {messages.length === 0 && (
-          <div className="empty-state animate-fade-in-up" style={{ padding: '2rem', marginTop: '2rem', border: 'none', background: 'transparent' }}>
-            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--bg-card-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <div className="flex flex-col items-center justify-center p-8 mt-8 border-none bg-transparent animate-fade-in-up text-center">
+            <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center mb-6">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             </div>
-            <h3 style={{ marginBottom: '0.5rem' }}>Ask your document anything</h3>
-            <p className="text-secondary" style={{ maxWidth: 300 }}>
+            <h3 className="text-xl font-semibold mb-2 text-foreground">Ask your document anything</h3>
+            <p className="text-muted max-w-[300px]">
               The AI has processed this document and is ready to extract intelligence, summarize content, or find specific details.
             </p>
           </div>
         )}
 
         {messages.map((msg, i) => (
-          <div key={i} className={`chat-bubble-container ${msg.role}`}>
-            <div className="chat-bubble">
+          <div key={i} className={`flex flex-col max-w-[85%] animate-fade-in-up ${msg.role === 'user' ? 'self-end items-end' : 'self-start items-start'}`}>
+            <div className={`p-4 px-5 rounded-2xl text-[0.95rem] leading-relaxed shadow-sm ${msg.role === 'user' ? 'rounded-br-sm bg-primary text-white' : 'rounded-bl-sm bg-white border border-border text-foreground'}`}>
               {msg.role === "assistant" ? (
-                <div className="markdown-content">
+                <div className="prose prose-zinc max-w-none prose-p:leading-relaxed prose-pre:bg-zinc-50 prose-pre:border prose-pre:border-border prose-a:text-accent prose-code:text-accent">
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
                 </div>
               ) : (
-                <p style={{ margin: 0, color: 'inherit' }}>{msg.content}</p>
+                <p className="m-0 text-inherit">{msg.content}</p>
               )}
             </div>
             
             {msg.sources && msg.sources.length > 0 && (
-              <div className="chat-sources">
+              <div className="mt-2 text-xs text-muted flex gap-2 items-center px-2">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                 Sources: 
                 {[...new Set(msg.sources.map((s) => s.page_number))]
                   .sort((a, b) => a - b)
                   .map((p) => (
-                    <span key={p} className="source-tag">p.{p}</span>
+                    <span key={p} className="bg-zinc-100 border border-zinc-200 text-zinc-600 px-2 py-0.5 rounded">p.{p}</span>
                   ))}
               </div>
             )}
@@ -131,19 +131,13 @@ export default function ChatPage() {
         ))}
 
         {sending && (
-          <div className="chat-bubble-container assistant">
-            <div className="chat-bubble" style={{ padding: '1rem' }}>
-              <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', height: '24px' }}>
-                <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', animation: 'fadeInOut 1.4s infinite 0s' }}></div>
-                <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', animation: 'fadeInOut 1.4s infinite 0.2s' }}></div>
-                <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--text-muted)', animation: 'fadeInOut 1.4s infinite 0.4s' }}></div>
+          <div className="flex flex-col max-w-[85%] self-start items-start animate-fade-in-up">
+            <div className="p-4 px-5 rounded-2xl rounded-bl-sm shadow-sm bg-white border border-border">
+              <div className="flex gap-1.5 items-center h-6">
+                <div className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse" style={{ animationDelay: '300ms' }}></div>
               </div>
-              <style jsx>{`
-                @keyframes fadeInOut {
-                  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-                  50% { opacity: 1; transform: scale(1.2); }
-                }
-              `}</style>
             </div>
           </div>
         )}
@@ -155,23 +149,22 @@ export default function ChatPage() {
           </div>
         )}
 
-        <div ref={bottomRef} style={{ height: 1 }} />
+        <div ref={bottomRef} className="h-px" />
       </div>
 
-      <div className="chat-input-wrapper">
-        <form className="chat-input-form" onSubmit={handleSend}>
+      <div className="p-6 bg-white border-t border-border sticky bottom-0">
+        <form className="flex gap-3 bg-zinc-50 p-2 rounded-full border border-border shadow-sm transition-all duration-200 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-transparent focus-within:bg-white" onSubmit={handleSend}>
           <input
             type="text"
-            className="chat-input"
+            className="flex-1 bg-transparent border-none px-5 py-3 text-foreground text-[0.95rem] outline-none placeholder:text-muted"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Message Document AI..."
             disabled={sending}
           />
-          <button type="submit" className="chat-send-btn" disabled={sending || !question.trim()}>
+          <button type="submit" className="bg-primary text-white border-none rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-primary-hover active:scale-95 disabled:bg-zinc-200 disabled:text-zinc-400 disabled:cursor-not-allowed disabled:hover:bg-zinc-200 disabled:active:scale-100" disabled={sending || !question.trim()}>
             {sending ? (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 2s linear infinite' }}><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-              <style jsx>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
               </svg>
             ) : (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>

@@ -66,21 +66,23 @@ export default function UploadPage() {
   if (!authChecked) return null;
 
   return (
-    <div className="dashboard-layout">
-      <nav className="navbar" style={{ marginBottom: '4rem' }}>
-        <div className="navbar-brand" style={{ cursor: 'pointer' }} onClick={() => router.push("/dashboard")}>
-          <div style={{ width: 24, height: 24, borderRadius: 6, background: 'linear-gradient(135deg, var(--accent), #818cf8)' }}></div>
+    <div className="w-full max-w-6xl mx-auto p-4 md:p-8 min-h-screen flex flex-col">
+      <nav className="flex items-center justify-between py-6 mb-12 border-b border-border">
+        <div className="text-xl font-semibold flex items-center gap-3 cursor-pointer" onClick={() => router.push("/dashboard")}>
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
           DocIntel
         </div>
-        <div className="navbar-actions">
+        <div className="flex items-center gap-4">
           <button onClick={() => router.push("/dashboard")} className="btn btn-ghost">Cancel</button>
         </div>
       </nav>
 
-      <div className="upload-container">
-        <div className="glass-card animate-fade-in-up" style={{ width: '100%', maxWidth: '540px' }}>
-          <h1 style={{ marginBottom: '0.5rem', textAlign: 'center' }}>Upload Document</h1>
-          <p className="text-secondary" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      <div className="flex-1 flex items-center justify-center pb-20">
+        <div className="w-full max-w-xl glass-card animate-fade-in-up p-8 md:p-10">
+          <h1 className="text-2xl font-bold mb-2 text-center tracking-tight">Upload Document</h1>
+          <p className="text-muted text-center mb-8">
             Extract insights and chat with your PDF documents (max 10MB)
           </p>
 
@@ -88,9 +90,8 @@ export default function UploadPage() {
 
           <form onSubmit={handleUpload}>
             <div 
-              className="upload-dropzone" 
+              className={`border-2 border-dashed rounded-xl p-10 text-center transition-all duration-200 cursor-pointer relative ${file ? 'border-accent bg-blue-50/50' : 'border-border bg-zinc-50 hover:border-accent hover:bg-blue-50/30'}`}
               onClick={() => !file && fileInputRef.current?.click()}
-              style={{ borderColor: file ? 'var(--accent)' : 'var(--border-color)', backgroundColor: file ? 'var(--bg-card)' : 'rgba(17, 20, 24, 0.5)' }}
             >
               <input 
                 type="file" 
@@ -98,24 +99,24 @@ export default function UploadPage() {
                 onChange={handleFileChange} 
                 ref={fileInputRef}
                 disabled={uploading}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
               
-              <div className="upload-icon">
+              <div className="mb-4 flex justify-center text-accent">
                 {file ? (
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><polyline points="9 15 12 18 15 15"></polyline><line x1="12" y1="12" x2="12" y2="18"></line></svg>
                 ) : (
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 )}
               </div>
               
               {file ? (
                 <div>
-                  <p style={{ color: 'var(--text-primary)', fontWeight: 500, margin: 0 }}>{file.name}</p>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                  <p className="font-medium text-foreground m-0">{file.name}</p>
+                  <p className="text-xs text-muted mt-1">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
                   <button 
                     type="button" 
-                    className="btn btn-ghost" 
-                    style={{ marginTop: '1rem', padding: '0.25rem 0.75rem', fontSize: '0.8rem' }}
+                    className="btn btn-ghost mt-4 px-3 py-1 text-xs" 
                     onClick={(e) => { e.stopPropagation(); setFile(null); }}
                     disabled={uploading}
                   >
@@ -124,13 +125,13 @@ export default function UploadPage() {
                 </div>
               ) : (
                 <div>
-                  <p style={{ color: 'var(--text-primary)', fontWeight: 500, margin: 0 }}>Click or drag file to upload</p>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>PDF files only</p>
+                  <p className="font-medium text-foreground m-0">Click or drag file to upload</p>
+                  <p className="text-xs text-muted mt-1">PDF files only</p>
                 </div>
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', justifyContent: 'flex-end' }}>
+            <div className="flex gap-4 mt-8 justify-end">
               <button type="button" className="btn btn-secondary" onClick={() => router.push("/dashboard")} disabled={uploading}>
                 Cancel
               </button>

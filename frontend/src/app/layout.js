@@ -19,8 +19,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>
-        <div className="app-wrapper animate-fade-in">
+      <body className="antialiased text-foreground bg-background">
+        <div className="min-h-screen animate-fade-in">
           {children}
         </div>
       </body>

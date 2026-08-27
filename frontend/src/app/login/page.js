@@ -39,9 +39,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="auth-container">
-      <form onSubmit={handleSubmit} className="auth-form glass-card animate-fade-in-up">
-        <h1>Welcome back</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-[420px] flex flex-col gap-5 glass-card p-6 sm:p-8 animate-fade-in-up">
+        <h1 className="text-3xl font-semibold text-center tracking-tight mb-2">Welcome back</h1>
 
         {error && <p className="error-text">{error}</p>}
 
@@ -69,12 +69,16 @@ export default function LoginPage() {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }} disabled={loading}>
+        <button type="submit" className="btn btn-primary w-full mt-2" disabled={loading}>
           {loading ? "Logging in..." : "Log in"}
         </button>
 
-        <p className="auth-form-footer">
-          Don&apos;t have an account? <Link href="/register">Register</Link>
+        <p className="text-xs text-center text-muted mt-2">
+          Note: The backend may take ~50s to wake up if inactive.
+        </p>
+
+        <p className="text-center text-sm text-muted mt-4">
+          Don&apos;t have an account? <Link href="/register" className="text-accent font-medium hover:text-accent-hover transition-colors">Register</Link>
         </p>
       </form>
     </div>
