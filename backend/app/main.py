@@ -1,3 +1,5 @@
+import uuid
+import time
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
@@ -5,7 +7,9 @@ from slowapi.errors import RateLimitExceeded
 
 from app.api import auth, documents, chat
 from app.core.limiter import limiter
-from app.core.logging_config import setup_logging, logger
+from app.core.login_config import setup_logging, logger
+
+
 
 setup_logging()
 
@@ -14,11 +18,18 @@ app = FastAPI(title="AI Document Intelligence Platform")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000",
+                   "https://ai-document-intelligence-p-git-de62e6-kartiks-projects-314e412d.vercel.app"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.middleware("http")
 async def request_logging_middleware(request: Request, call_next):
-    import uuid
-    import time
     request_id = str(uuid.uuid4())[:8]
     start_time = time.time()
 
@@ -34,19 +45,6 @@ async def request_logging_middleware(request: Request, call_next):
     response.headers["X-Request-ID"] = request_id
     return response
 
-
-# CORS added LAST so it becomes the outermost middleware layer,
-# intercepting preflight OPTIONS requests before anything else runs
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://ai-document-intelligence-p-git-de62e6-kartiks-projects-314e412d.vercel.app/"
-        ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.include_router(auth.router)
 app.include_router(documents.router)
